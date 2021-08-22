@@ -1,0 +1,40 @@
+select 
+ESIB.ITEM_NUMBER,
+ESIB.INVENTORY_ITEM_STATUS_CODE,
+ESIB.INVENTORY_ORGANIZATION_ID,
+ESIT.DESCRIPTION,
+ESIB.MASTER_ORG_ID,
+EIRB.REVISION,
+EIRB.REVISION_REASON
+from 
+
+EGP_SYSTEM_ITEMS_B ESIB,
+EGP_SYSTEM_ITEMS_TL ESIT,
+EGP_ITEM_REVISIONS_B EIRB
+
+WHERE 
+ESIB.INVENTORY_ITEM_ID=ESIT.INVENTORY_ITEM_ID AND 
+ESIB.INVENTORY_ITEM_ID=EIRB.INVENTORY_ITEM_ID 
+
+
+SELECT 
+ITEMS.ITEM_NUMBER,
+ITEMCATS.category_id,
+ITEMCATS.sequence_number,
+ITEMCATS.alt_item_cat_code,
+ECT.DESCRIPTION,
+ECT.CATEGORY_NAME
+
+FROM 
+egp_item_cat_assignments ITEMCATS,
+egp_category_sets_b CATSETS,
+egp_system_items_b ITEMS,
+inv_org_parameters ORG,
+EGP_CATEGORIES_TL ECT
+
+WHERE 
+CATSETS.category_set_id = ITEMCATS.category_set_id AND 
+ITEMS.inventory_item_id = ITEMCATS.inventory_item_id AND 
+ORG.organization_id = ITEMS.organization_id AND 
+ITEMCATS.category_id=ECT.category_id AND
+ ( ( CATSETS.control_level = 1 AND ITEMCATS.organization_id = ORG.master_organization_id ) OR ( CATSETS.control_level = 2 AND ITEMCATS.organization_id = ORG.organization_id ) ) 
